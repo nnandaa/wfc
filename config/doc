@@ -1,0 +1,6 @@
+//jika local development, silahkan ubah nilai variabel nama_project 
+$app_name = 'NewWFC'; 
+ 
+//jika sudah diupload di hosting silahkan ubah berikut 
+$url = 'https://wolsfriedchicken.infinityfreeapp.com/'; 
+ 

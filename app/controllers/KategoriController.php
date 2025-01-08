@@ -41,10 +41,8 @@ class KategoriController
         }
 
         $success = $this->kategori->save($data);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses menambahkan 
-data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat 
-menambahkan data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses menambahkan data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat menambahkan data'];
     }
 
     public function ubahkategori($id, $data): array
@@ -55,18 +53,15 @@ menambahkan data'];
         }
 
         $success = $this->kategori->edit($id, $data);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses mengubah 
-data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat mengubah 
-data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses mengubah data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat mengubah data'];
     }
 
     public function hapuskategori($id): array
     {
         $success = $this->kategori->delete($id);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses menghapus 
-data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat menghapus 
-data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses menghapus data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat menghapus data'];
     }
+
 }

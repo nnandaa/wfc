@@ -1,27 +1,25 @@
 <?php
 $cProduk = new ProdukController();
 $cKategori = new KategoriController();
+
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $cProduk = new ProdukController();
     $produk = $cProduk->produkById($_GET['id']) ?? false;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // validasi CSRF token 
+    // validasi CSRF token
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
         $data = $_POST;
         $result = $cProduk->ubahproduk($_GET['id'], $data);
 
-        //jika terdapat error 
-        if (
-            !array_key_exists('icon', $result) &&
-            !array_key_exists('message', $result) && !empty($result)
-        ) {
-            $errors = $result; // simpan error 
+        //jika terdapat error
+        if (!array_key_exists('icon', $result) && !array_key_exists('message', $result) && !empty($result)) {
+            $errors = $result; // simpan error
         } else {
             $_SESSION['icon_message'] = $result['icon'];
             $_SESSION['message'] = $result['message'];
-            header("Location: ?menu=shop&sub=produk");  // Redirect after action 
+            header("Location: ?menu=shop&sub=produk");  // Redirect after action
             exit;
         }
     } else {
@@ -40,19 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     Kembali</a>
             </h3>
         </div>
-    <?php exit;
+        <?php exit;
     } ?>
     <div class="card card-warning">
         <div class="card-header">
-            <h3 class="card-title">Ubah Produk <b><?= $produk['nama']
-                                                    ?></b></h3>
+            <h3 class="card-title">Ubah Produk <b><?= $produk['nama'] ?></b></h3>
         </div>
         <form action="" method="POST" enctype="multipart/form-data">
             <div class="card-body">
                 <div class="form-group">
                     <label for="nama">Nama Produk</label>
-                    <input type="text" class="form-control" id="nama"
-                        name="nama" value="<?= $produk['nama'] ?>"
+                    <input type="text" class="form-control" id="nama" name="nama" value="<?= $produk['nama'] ?>"
                         placeholder="Masukkan Nama Produk">
                     <?php if (isset($errors['nama'])): ?>
                         <div class="invalid-feedback"><?= $errors['nama'] ?></div>
@@ -85,31 +81,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
                 </div>
                 <div class="form-group">
+                    <label for="kategori_id">Kategori</label>
+                    <select class="custom-select form-control-border border-width-2" id="kategori_id"
+                        name="kategori_id">
+                        <?php foreach ($cKategori->semuaKategori() as $kategori) { ?>
+                            <option value="<?= $kategori['id'] ?>" <?= $kategori['id'] == $produk['kategori_id'] ? 'selected' : '' ?>><?= $kategori['nama'] ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php if (isset($errors['kategori_id'])): ?>
+                        <div class="invalid-feedback"><?= $errors['kategori_id'] ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group">
                     <label for="nama">Upload Foto</label>
                     <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
                     <?php if (isset($errors['photo'])): ?>
                         <div class="invalid-feedback"><?= $errors['photo'] ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-group">
-                    <label for="kategori_id">Kategori</label>
-                    <select class="custom-select form-control-border border width-2" id="kategori_id"
-                        name="kategori_id">
-                        <?php foreach (
-                            $cKategori->semuaKategori() as
-                            $kategori
-                        ) { ?>
-                            <option value="<?= $kategori['id'] ?>" <?=
-                        $kategori['id'] == $produk['kategori_id'] ? 'selected' : '' ?>><?=
-                                                                                                                                    $kategori['nama'] ?></option>
-                        <?php } ?>
-                    </select>
-                    <?php if (isset($errors['kategori_id'])): ?>
-                        <div class="invalid-feedback"><?=
-                                                        $errors['kategori_id'] ?></div>
-                    <?php endif; ?>
-                </div>
-
             </div>
 
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">

@@ -10,36 +10,35 @@ class AuthController
         $this->pelanggan = new Pelanggan();
     }
 
+    private function validateLogin(array $data): array
+    {
+        $errors = [];
+
+        if (empty($data['password'])) {
+            $errors['password'] = "Password is required.";
+        }
+
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = "Please enter a valid email address.";
+        }
+
+        return $errors;
+    }
+
     private function validateRegister(array $data): array
     {
         $errors = [];
 
         if (empty($data['username'])) {
-            $errors['username'] = "username is required.";
+            $errors['username'] = "Username is required.";
         }
 
         if (empty($data['password']) || strlen($data['password']) < 8) {
-            $errors['password'] = "Password must be at least 8 characters 
-long.";
+            $errors['password'] = "Password must be at least 8 characters long.";
         }
 
-        if (empty($data['email']) || !filter_var(
-            $data['email'],
-            FILTER_VALIDATE_EMAIL
-        )) {
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = "Please enter a valid email address.";
-        }
-
-        if (empty($data['nama'])) {
-            $errors['nama'] = "username is required.";
-        }
-
-        if (empty($data['telp'])) {
-            $errors['telp'] = "No. Telp is required.";
-        }
-
-        if (empty($data['alamat'])) {
-            $errors['alamat'] = "Alamat is required.";
         }
 
         if (!empty($this->pengguna->search('username', $data['username']))) {
@@ -50,34 +49,48 @@ long.";
             $errors['email'] = "Email is allready taken";
         }
 
+        if (empty($data['nama'])) {
+            $errors['nama'] = "Nama Lengkap is required.";
+        }
+
+        if (empty($data['telp'])) {
+            $errors['telp'] = "No. Telp is required.";
+        }
+
+        if (empty($data['alamat'])) {
+            $errors['alamat'] = "Alamat is required.";
+        }
+
         return $errors;
     }
 
-    public function save_pelanggan($data)
+    public function daftar($data)
     {
-        $pelangganData = [
-            'nama' => $data['nama'],
-            'alamat' => $data['alamat'],
-            'telp' => $data['telp']
-        ];
 
-        return $this->pengguna->savePelanggan($pelangganData);
-    }
-
-    public function daftar($data): array
-    {
         $errors = $this->validateRegister($data);
 
         if (!empty($errors)) {
             return $errors;
         }
 
-        $pelangganId = $this->save_pelanggan($data);
+        $dataPelanggan = [
+            'nama' => $data['nama'],
+            'alamat' => $data['alamat'],
+            'telp' => $data['telp']
+        ];
+
+        $dataPengguna = [
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => $data['password']
+        ];
+
+        $pelangganId = $this->pengguna->savePelanggan($dataPelanggan);
 
         if ($pelangganId) {
-            $data['id_pelanggan'] = $pelangganId;
+            $dataPengguna['id_pelanggan'] = $pelangganId;
 
-            $success = $this->pengguna->save($data);
+            $success = $this->pengguna->save($dataPengguna);
 
             if (!$success) {
                 $this->pelanggan->delete($pelangganId);
@@ -86,23 +99,39 @@ long.";
             $success = false;
         }
 
-        return $success
-            ? ['icon' => 'success', 'message' => 'Registrasi Berhasil']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan Registrasi 
-member baru'];
+        $_SESSION['icon_message'] = $success ? 'success' : 'error';
+        $_SESSION['message'] = $success ? 'Registrasi Berhasil, Silahkan Login' : 'Terjadi Kesalahan, Registrasi Gagal';
+
+        return (bool) $success;
     }
 
-    public function masuk($email, $password): array
+    public function masuk($data)
     {
-        $result = $this->pengguna->login($email, $password);
-        return !empty($result) ? ['icon' => 'success', 'message' => 'Berhasil 
-Login', 'user' => $result]
-            : ['icon' => 'error', 'message' => 'Username dan Password tidak 
-ditemukan'];
+        $errors = $this->validateLogin($data);
+        
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        $result = $this->pengguna->login($data['email'], $data['password']);
+
+        $_SESSION['icon_message'] = $result ? 'success' : 'error';
+        $_SESSION['message'] = $result ? 'Berhasil Login' : 'Username dan Password tidak ditemukan';
+
+        if ($result) {
+            $_SESSION['user'] = $result;
+        }
+
+        return (bool) $result;
     }
 
     public function keluar()
     {
+        unset($_SESSION['user']);
         session_destroy();
+        session_start();
+        $_SESSION['icon_message'] = 'success';
+        $_SESSION['message'] = 'Anda berhasil keluar dari sesi ini';
     }
+
 }

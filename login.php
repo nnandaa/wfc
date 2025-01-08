@@ -1,20 +1,19 @@
 <?php
 session_start();
-// include_once './config/app.php';
+include_once './config/app.php';
 
 $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 
 if (isset($_SESSION['user'])) {
-    // Redirect to the appropriate page if the user is logged in 
-    $redirectUrl = empty($_SESSION['user']['id_pelanggan']) ? 'dashboard.php' :
-        getBaseUrl();
-    // Prevent redirection loop by checking if the current page is not the redirect destination 
+    // Redirect to the appropriate page if the user is logged in
+    $redirectUrl = empty($_SESSION['user']['id_pelanggan']) ? 'dashboard.php' : getBaseUrl();
+    // Prevent redirection loop by checking if the current page is not the redirect destination
     if ($_SERVER['PHP_SELF'] !== $redirectUrl) {
         header("Location: $redirectUrl");
         exit;
     }
 }
-// $cAuth = new AuthController();
+$cAuth = new AuthController();
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,8 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (is_array($result)) {
         $errors = $result;
     } else {
-        $redirectUrl = empty($_SESSION['user']['id_pelanggan']) ? 'dashboard.php'
-            : getBaseUrl();
+        $redirectUrl = empty($_SESSION['user']['id_pelanggan']) ? 'dashboard.php' : getBaseUrl();
         header("Location: $redirectUrl");
         exit;
     }
@@ -47,16 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="theme-color" content="#712cf9">
     <title><?= $app_name ?> | Login</title>
     <link rel="icon" type="image/x-icon" href="<?= $logo ?>">
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- custom css untuk tampilan user -->
     <link href="./assets/css/home.css" rel="stylesheet">
-
+    
     <!-- theme dark/light -->
     <script src="./assets/js/color-themes.js"></script>
 
@@ -141,45 +136,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row">
             <main class="form-signin w-100 h-100 m-auto">
                 <div class="col-12 text-center">
-                    <img class="mb-4" src="<?= $logo ?>" alt="" width="72"
-                        height="57">
+                    <img class="mb-4" src="<?= $logo ?>" alt="" width="72" height="57">
                 </div>
 
                 <h1 class="h3 mb-3 fw-normal text-center">Please sign in</h1>
-                <p class="lead fs-6 text-center">Belum memiliki akun ? <a
-                        href="register.php">register</a> disini</p>
+                <p class="lead fs-6 text-center">Belum memiliki akun ? <a href="register.php">register</a> disini</p>
                 <form action="" method="post">
                     <div class="form-floating">
-                        <input type="email" class="form-control <?=
-                                                                isset($errors['email']) ? 'is-invalid' : ''; ?>"
-                            id="floatingInput" placeholder="name@example.com"
-                            name="email"
-                            value="<?= isset($old['email']) ?
-                                        htmlspecialchars($old['email']) : ''; ?>">
+                        <input type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : ''; ?>"
+                            id="floatingInput" placeholder="name@example.com" name="email"
+                            value="<?= isset($old['email']) ? htmlspecialchars($old['email']) : ''; ?>">
                         <label for="floatingInput">Email address</label>
                         <?php if (isset($errors['email'])): ?>
-                            <div class="invalid-feedback"><?= $errors['email']
-                                                            ?></div>
+                            <div class="invalid-feedback"><?= $errors['email'] ?></div>
                         <?php endif; ?>
                     </div>
 
                     <div class="form-floating">
                         <input type="password"
-                            class="form-control <?= isset($errors['password']) ?
-                                                    'is-invalid' : ''; ?>"
-                            id="floatingPassword" placeholder="Password"
-                            name="password">
+                            class="form-control <?= isset($errors['password']) ? 'is-invalid' : ''; ?>"
+                            id="floatingPassword" placeholder="Password" name="password">
                         <label for="floatingPassword">Password</label>
                         <?php if (isset($errors['password'])): ?>
-                            <div class="invalid-feedback"><?= $errors['password']
-                                                            ?></div>
+                            <div class="invalid-feedback"><?= $errors['password'] ?></div>
                         <?php endif; ?>
                     </div>
 
-                    <input type="hidden" name="csrf_token" value="<?=
-                                                                    $_SESSION['csrf_token']; ?>">
-                    <button class="btn btn-primary w-100 py-2" type="submit">Sign
-                        in</button>
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+                    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
                     <p class="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
                 </form>
 
@@ -187,22 +171,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-        crossorigin="anonymous"></script>
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <!-- Sweetalert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <?php if (isset($_SESSION["message"]) && isset($_SESSION["icon_message"])) {
-    ?>
+    <?php if (isset($_SESSION["message"]) && isset($_SESSION["icon_message"])) { ?>
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 Swal.fire({
                     title: '<?= ucfirst($_SESSION['icon_message']); ?>',
                     text: '<?= $_SESSION['message']; ?>',
@@ -210,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 })
             });
         </script>
-    <?php
+        <?php
         unset($_SESSION["icon_message"]);
         unset($_SESSION["message"]);
     } ?>

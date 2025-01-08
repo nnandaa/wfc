@@ -45,10 +45,8 @@ class PelangganController
         }
 
         $success = $this->pelanggan->save($data);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses 
-menambahkan data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat 
-menambahkan data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses menambahkan data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat menambahkan data'];
     }
 
     public function ubahpelanggan($id, $data): array
@@ -59,18 +57,15 @@ menambahkan data'];
         }
 
         $success = $this->pelanggan->edit($id, $data);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses mengubah 
-data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat 
-mengubah data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses mengubah data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat mengubah data'];
     }
 
     public function hapuspelanggan($id): array
     {
         $success = $this->pelanggan->delete($id);
-        return $success ? ['icon' => 'success', 'message' => 'Sukses 
-menghapus data']
-            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat 
-menghapus data'];
+        return $success ? ['icon' => 'success', 'message' => 'Sukses menghapus data']
+            : ['icon' => 'error', 'message' => 'Terjadi kesalahan saat menghapus data'];
     }
+    
 }

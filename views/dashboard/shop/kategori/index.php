@@ -3,16 +3,16 @@ $cKategori = new KategoriController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && $_POST['aksi'] === 'hapus') {
-        // validasi CSRF token 
+        // validasi CSRF token
         if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
-            // Process delete 
+            // Process delete
             $result = $cKategori->hapuskategori($_POST['id']);
             $_SESSION['icon_message'] = $result['icon'];
             $_SESSION['message'] = $result['message'];
         } else {
             $_SESSION['message'] = 'Token CSRF tidak valid';
         }
-        header("Location: ?menu=shop&sub=kategori");  // Redirect after action 
+        header("Location: ?menu=shop&sub=kategori");  // Redirect after action
         exit;
     }
 }
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card">
         <div class="card-header">
             <h3 class="card-title"><a class="btn btx-xs btn-success"
-                    href="<?= getBaseUrl() . "dashboard?" . $dashboard->getQueryURL() . "&aksi=tambah"; ?>"><i
+                    href="<?= getBaseUrl() . "dashboard.php?" . $dashboard->getQueryURL() . "&aksi=tambah"; ?>"><i
                         class="fas fa-plus"></i> Kategori</a>
             </h3>
         </div>
@@ -46,21 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td><?= $kategori['nama']; ?></td>
                             <td><?= $kategori['deskripsi']; ?></td>
                             <td>
-                                <a href="<?= getBaseUrl() . "dashboard?" .
-                                                $dashboard->getQueryURL() . "&aksi=edit&id=" . $kategori['id']; ?>"
+                                <a href="<?= getBaseUrl() . "dashboard.php?" . $dashboard->getQueryURL() . "&aksi=edit&id=" . $kategori['id']; ?>"
                                     class="btn btn-sm btn-warning">Edit</a>
 
-                                <!-- Tombol Delete -->
-                                <form action="" method="POST"
-                                    style="display:inline-block;"
+                                <form action="" method="POST" style="display:inline-block;"
                                     onsubmit="return confirm('Apa anda yakin ingin menghapus kategori ini ?');">
-                                    <input type="hidden" name="id" value="<?=
-                                                                            $kategori['id']; ?>">
-                                    <input type="hidden" name="aksi"
-                                        value="hapus">
-                                    <input type="hidden" name="csrf_token"
-                                        value="<?= $_SESSION['csrf_token']; ?>">
-                                    <!-- CSRF token -->
+                                    <input type="hidden" name="id" value="<?= $kategori['id']; ?>">
+                                    <input type="hidden" name="aksi" value="hapus">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
                                     <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                                 </form>
                             </td>
@@ -72,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<script> 
-    $('#table').DataTable({ 
-        lengthMenu: [ 
-            [10, 25, 50, -1], 
-            [10, 25, 50, 'All'] 
-        ] 
-    }); 
+<script>
+    $('#table').DataTable({
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All']
+        ]
+    });
 </script>
